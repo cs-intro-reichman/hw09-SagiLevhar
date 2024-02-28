@@ -2,9 +2,6 @@ import java.util.HashMap;
 import java.util.Random;
 
 public class LanguageModel {
-
-
-
     // The map of this model.
     // Maps windows to lists of charachter data objects.
     HashMap<String, List> CharDataMap;
@@ -78,36 +75,37 @@ public class LanguageModel {
     // Computes and sets the probabilities (p and cp fields) of all the
 	// characters in the given list. */
 	public void calculateProbabilities(List probs) {				
-		// Your code goes here
-        
+        //counts the sum of characters        
         int totalCharacters = 0;
-        
         ListIterator itr = probs.listIterator(0);
         while (itr.hasNext()) {
             CharData charData = itr.next(); // Get next CharData object
             totalCharacters += charData.count; // Accumulate character count
         }
 
-        double counter = 0;
-        itr = probs.listIterator(0);
-        while(itr.hasNext()) {
-            CharData charData = itr.next();
-            charData.p = ((double) charData.count) / totalCharacters;
-            counter += charData.p;
-            charData.cp = counter;
+        itr = probs.listIterator(0); // reset the iterator
+        CharData curr = itr.next();
+        curr.p = ((double) curr.count/totalCharacters); // set p to the first node
+        curr.cp = (curr.p); // set cp to the first node
+        double prevcp = curr.cp;
+        while(itr.hasNext()) { // set p and cp to the rest
+            curr = itr.next();
+            curr.p = ((double) curr.count / totalCharacters);
+            curr.cp = ((double) prevcp + curr.p);
+            prevcp = curr.cp;
         }
+
 	}
 
     // Returns a random character from the given probabilities list.
 	public char getRandomChar(List probs) {
-		// Your code goes here
         double r = randomGenerator.nextDouble();
         ListIterator itr = probs.listIterator(0);
 
         while (itr.hasNext()) {
             CharData charData = itr.next();
             
-            if (charData.cp > r) {
+            if (charData.cp > r) {// if we found char with bigger cp
                 return charData.chr;
             }
         }
@@ -123,29 +121,8 @@ public class LanguageModel {
 	 * @return the generated text
 	 */
 	public String generate(String initialText, int textLength) {
-		// Your code goes here
-        
-        /*if (initialText.length() < windowLength) {
-            return initialText;
-        }
 
-        String window = initialText.substring(Math.max(0, initialText.length() - windowLength));
-        StringBuilder randomText = new StringBuilder(initialText);
-        char c;
-        while (randomText.length() - initialText.length() < textLength) {
-
-            List probs = CharDataMap.get(window);
-            if (probs == null) {
-                return randomText.toString();
-            }
-            c = getRandomChar(probs);
-            randomText.append(c);
-            window = window.substring(1) + c; 
-        }
-
-        return randomText.toString();*/
-
-        if (initialText.length() < windowLength) {
+        if (initialText.length() < windowLength) {// cheking if the size of the window bigger than initialText
             return initialText;
         }
     
@@ -174,7 +151,6 @@ public class LanguageModel {
 	}
 
     public static void main(String[] args) {
-		// Your code goes here
         int windowLength = Integer.parseInt(args[0]);
         String initialText = args[1];
         int generatedTextLength = Integer.parseInt(args[2]);

@@ -29,7 +29,7 @@ public class List {
 
     /** GIVE Adds a CharData object with the given character to the beginning of this list. */
     public void addFirst(char chr) {
-        // Your code goes here
+
         CharData c = new CharData(chr);
         Node newN = new Node(c, first);
         first = newN;
@@ -38,14 +38,15 @@ public class List {
     
     /** GIVE Textual representation of this list. */
     public String toString() {
-        // Your code goes here
-        Node curr = first;
-        String string = "(";
-        while (curr != null) {
-            string += curr.toString() + " ";
-            curr = curr.next;
+        if (size == 0) return "()";
+        String s = "(";
+        Node current = this.first;
+        while (current != null) {
+            s += current.cp + " ";
+            current = current.next;
         }
-        return string.substring(0, string.length()) +")";
+        s = s.substring(0, s.length() - 1) + ")";
+        return s;
     }
 
     /** Returns the index of the first CharData object in this list
@@ -69,7 +70,7 @@ public class List {
      *  increments its counter. Otherwise, adds a new CharData object with the
      *  given chr to the beginning of this list. */
     public void update(char chr) {
-        // Your code goes here
+      
         Node curr = first;
         int i = indexOf(chr);
         if (i != -1) {
@@ -88,7 +89,7 @@ public class List {
      *  in this list, removes this CharData object from the list and returns
      *  true. Otherwise, returns false. */
     public boolean remove(char chr) {
-        // Your code goes here
+ 
         Node prev = null;
         Node curr = first;
         while (curr != null && !curr.cp.equals(chr)) {
@@ -112,7 +113,7 @@ public class List {
      *  If the index is negative or is greater than the size of this list, 
      *  throws an IndexOutOfBoundsException. */
     public CharData get(int index) {
-        // Your code goes here
+
         if (index >= size || index<0) {
             throw new IndexOutOfBoundsException("illegal index" + index);
         }
